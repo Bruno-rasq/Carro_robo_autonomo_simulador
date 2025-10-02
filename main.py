@@ -2,32 +2,37 @@ import os
 import time
 
 from core.board import Board
-from core.robot import Robot
-from core.pathfinder import get_next_coord
+from core.robot import RobotCar
+from sources.globals import TIMEOUT
 
 
-BOARD 	= Board.get_random_board()
-ROBOT 	= Robot(0, 1, "D")
-TIMEOUT = 0.6
 
 
+# função auto follow inicia uma simulação simples, usando board simples(sem obstaculos), e um robo simples
+# o carrinho robo inicial no ponto 0, 0 e segue a unica trilha até chegar ao final.
 def auto_follow():
+	
+	BOARD 	= Board()
+	ROBOT 	= RobotCar(0, 0)
+	
 	while True:
-		os.system("clear")
-		
-		Rx, Ry = ROBOT.get_coord() 
-		x, y = get_next_coord(BOARD, Rx, Ry)
+
+		board = BOARD.get_board()
+		current_coordx, current_coordy = ROBOT.get_coord() 
+		new_coordx, new_coordy = ROBOT.get_next_coord(board)
 	
-		if x == y == -1: break
+		if new_coordx == new_coordy == -1: break
+
+		BOARD.clear_prev_robot_position(current_coordx, current_coordy)
+		BOARD.set_robot_position(new_coordx, new_coordy)
 	
-		BOARD[Rx][Ry] = 3
-		BOARD[x][y] = 2
-	
-		ROBOT.set_coord(x, y)
+		ROBOT.set_coord(new_coordx, new_coordy)
 	
 		Board.print_board_state(BOARD)
-		print(f"curr coord: {x}:{y}")
+		
+		print(f"curr coord: {new_coordx}:{new_coordy}")
 		time.sleep(TIMEOUT)
+		os.system("clear")
 	
 
 

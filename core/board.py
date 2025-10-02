@@ -1,32 +1,38 @@
 import random
-from sources.boards import BOARDS
 from typing import List
+from sources.boards import EXAMPLE_BOARDS
+from sources.globals import board_cells_config
 
 
-
-class Board:
-
-	@staticmethod
-	def get_random_board() -> List[List[int]]:
-		size = len(BOARDS)
-		idx = random.randint(0, 60) % size
-		return BOARDS[idx]
-
+# classe Board gerencia os estados do board e suas peças(celulas) suas 
 # estados:
-# 	1 -> celula acessivel
-#	2 -> posicao do robo
-#	3 -> celula já visitada (marcada como vazia na exibição) 
-#	0 -> celula não acessivel.
-	@staticmethod
-	def set_cell(cell: int) -> str:
-		if cell == 2: return "X"
-		if cell == 3: return "_"
-		return "#" if cell == 0 else "_"
+#   1 -> célula acessível
+#   2 -> posição do robô
+#   3 -> célula já visitada (marcada como vazia na exibição) 
+#   0 -> célula não acessível.
+class Board:
+    def __init__(self):
+        self.board = self.get_random_board()
 
-	@staticmethod
-	def print_board_state(board):
-		for line in board:
-			for cell in line: 
-				print(Board.set_cell(cell), end="")
-			print("\n")
-		
+    def get_random_board(self) -> List[List[int]]:
+        size = len(EXAMPLE_BOARDS)
+        idx = random.randint(0, 60) % size
+        return EXAMPLE_BOARDS[idx]
+
+    def get_board(self) -> List[List[int]]:
+        return self.board
+
+    def set_robot_position(self, coord_x: int, coord_y: int) -> None:
+        self.board[coord_x][coord_y] = 2
+
+    def clear_prev_robot_position(self, coord_x: int, coord_y: int) -> None:
+        self.board[coord_x][coord_y] = 3
+
+    def define_cell(self, cell: int) -> str:
+        return board_cells_config[cell]
+
+    def print_board_state(self):
+        for row in self.board:
+            for cell in row:
+                print(self.define_cell(cell), end="")
+            print()
